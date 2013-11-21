@@ -73,11 +73,12 @@ class OpenGraph
 
   def check_images_path
     @original_images = @images.dup
-    uri = Addressable::URI.parse(@src)
+    uri = Addressable::URI.parse(@url)
     imgs = @images.dup
     @images = []
     imgs.each do |img|
-      if Addressable::URI.parse(img).host.nil?
+      img_uri = Addressable::URI.parse(img)
+      if uri and img_uri and img_uri.host.nil?
         full_path = uri.join(img).to_s
         add_image(full_path)
       else
