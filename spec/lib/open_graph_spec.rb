@@ -83,6 +83,20 @@ describe OpenGraph do
           og.images.should == ["http://test.host/images/wall1.jpg", "http://test.host/images/wall2.jpg"]
         end
       end
+      context "with messed HTML" do
+        it "should parse a fucked html" do
+          response = double(body: File.open("#{File.dirname(__FILE__)}/../view/messed.html", 'r') { |f| f.read })
+          RedirectFollower.stub(:new) { double(resolve: response) }
+
+          og = OpenGraph.new("http://test.host/child_page")
+          og.src.should == "http://test.host/child_page"
+          og.title.should == "COBRAS & LAGARTOS"
+          og.type.should == nil
+          og.url.should == "http://test.host/child_page"
+          og.description.should == "description"
+          og.images.should_not be_empty
+        end
+      end
     end
 
     context "with body" do
@@ -96,7 +110,7 @@ describe OpenGraph do
         og.type.should == "article"
         og.url.should == "http://test.host"
         og.description.should == "My OpenGraph sample site for Rspec"
-        og.images.should == ["http://test.host/images/rock1.jpg", "/images/rock2.jpg"]
+        og.images.should == ["http://test.host/images/rock1.jpg", "http://test.host/images/rock2.jpg"]
       end
     end
   end

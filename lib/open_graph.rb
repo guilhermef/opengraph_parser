@@ -77,12 +77,16 @@ class OpenGraph
     imgs = @images.dup
     @images = []
     imgs.each do |img|
-      img_uri = Addressable::URI.parse(img)
-      if uri and img_uri and img_uri.host.nil?
-        full_path = uri.join(img).to_s
-        add_image(full_path)
-      else
-        add_image(img)
+      begin
+        img_uri = Addressable::URI.parse(img)
+        if uri and img_uri and img_uri.host.nil?
+          full_path = uri.join(img).to_s
+          add_image(full_path)
+        else
+          add_image(img)
+        end
+      rescue
+
       end
     end
   end
